@@ -1,9 +1,18 @@
-import LoginPage from "./login/page";
+import { UserButton } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
 
-const Home = () => {
-  return;
+const Home = async () => {
+  const { userId } = await auth();
+  if (userId) {
+    redirect("/");
+  }
 
-  <LoginPage />;
+  return (
+    <div className="flex h-full items-center justify-center">
+      <UserButton showName />
+    </div>
+  );
 };
 
 export default Home;
