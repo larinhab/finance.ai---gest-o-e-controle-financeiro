@@ -16,6 +16,7 @@ datasource db {
 model Transaction {
   id String @id @default(uuid())
   name String
+  userId String
   type TransactionType
   amount Decimal @db.Decimal(10, 2) 
   category TransactionCategory
