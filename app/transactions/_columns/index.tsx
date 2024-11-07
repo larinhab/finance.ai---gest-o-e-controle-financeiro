@@ -4,6 +4,28 @@ import { Transaction } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 import TransactionBadgeComponent from "../_components/type-badge";
 
+export const TRANSACTION_CATEGORY_LABELS = {
+  EDUCATION: "Educação",
+  ENTERTAINMENT: "Lazer",
+  FOOD: "Alimentação",
+  HEALTH: "Saúde",
+  HOUSING: "Moradia",
+  TRANSPORTATION: "Transporte",
+  SALARY: "Salário",
+  UTILITY: "Utilidade",
+  OTHER: "Outros",
+};
+
+export const TRANSACTION_PAYMENT_METHOD = {
+  BANK_TRANSFER: "Transferência Bancária",
+  BANK_SLIP: "Boleto",
+  CASH: "Dinheiro",
+  CREDIT_CARD: "Cartão de Crédito",
+  DEBIT_CARD: "Cartão de Débito",
+  PIX: "Pix",
+  OTHER: "Outros",
+};
+
 export const Transactioncolumns: ColumnDef<Transaction>[] = [
   {
     accessorKey: "name",
@@ -23,6 +45,9 @@ export const Transactioncolumns: ColumnDef<Transaction>[] = [
   {
     accessorKey: "category",
     header: "Categoria",
+    cell: ({ row: { original: transaction } }) => {
+      TRANSACTION_CATEGORY_LABELS[transaction.category];
+    },
   },
   {
     accessorKey: "paymentMethod",
