@@ -1,7 +1,7 @@
 import { Button } from "../ui/button";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { upsertTransaction } from "@/app/_actions/add-transactions";
+import { upsertTransaction } from "@/app/_actions/upsert-transactions";
 import { useForm } from "react-hook-form";
 import {
   DialogContent,
