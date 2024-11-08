@@ -1,4 +1,4 @@
-"use-client";
+"use client";
 
 import { z } from "zod";
 import { ArrowDownUp } from "lucide-react";
@@ -13,6 +13,7 @@ import {
   DialogTrigger,
   Dialog,
   DialogFooter,
+  DialogClose,
 } from "../ui/dialog";
 import {
   TransactionCategory,
@@ -41,14 +42,22 @@ import {
   TRANSACTIONS_PAYMENT_METHOD_OPTIONS,
   TRANSACTION_CATEGORY_OPTIONS,
 } from "@/app/_constants/transactions";
+import { DatePicker } from "../ui/date-picker";
+import { addTransaction } from "@/app/_actions/add-transactions";
+import { useState } from "react";
 
 const formSchema = z.object({
-  name: z.string().min(1, {
+  name: z.string().trim().min(1, {
     message: "O nome é obrigatório",
   }),
-  amount: z.number().min(1, {
-    message: "O valor é obrigatório",
-  }),
+  amount: z
+    .number({
+      required_error: "O valor é obrigatório",
+    })
+    .positive({
+      message: "O valor deve ser positivo.",
+    })
+    .min(1),
   type: z.nativeEnum(TransactionType, {
     required_error: "O tipo é obrigatório",
   }),
@@ -63,10 +72,12 @@ const formSchema = z.object({
   }),
 });
 
-const onSubmit = () => {};
+type FormSchema = z.infer<typeof formSchema>;
 
 const AddTransactionButton = () => {
-  const form = useForm<z.infer<typeof formSchema>>({
+  const [dialogIsOpen, setDialogIsOpen] = useState(false);
+
+  const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
@@ -78,11 +89,29 @@ const AddTransactionButton = () => {
     },
   });
 
+  const onSubmit = async (data: FormSchema) => {
+    try {
+      await addTransaction(data);
+      setDialogIsOpen(false);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
-    <Dialog>
+    <Dialog
+      open={dialogIsOpen}
+      onOpenChange={(open) => {
+        setDialogIsOpen(open);
+        form.reset();
+        if (!open) {
+          form.reset();
+        }
+      }}
+    >
       <DialogTrigger asChild>
         <div>
-          <Button className="rounded-full">
+          <Button className="rounded-full font-bold">
             Adicionar transação
             <ArrowDownUp className="ml-1" />
           </Button>
@@ -103,7 +132,15 @@ const AddTransactionButton = () => {
                 <FormItem>
                   <FormLabel>Valor</FormLabel>
                   <FormControl>
-                    <MoneyInput placeholder="R$ 00,00" {...field} />
+                    <MoneyInput
+                      placeholder="R$ 00,00"
+                      onBlur={field.onBlur}
+                      value={field.value}
+                      onValueChange={({ floatValue }) => {
+                        field.onChange(floatValue);
+                      }}
+                      disabled={field.disabled}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -205,10 +242,24 @@ const AddTransactionButton = () => {
                 </FormItem>
               )}
             />
-
+            <FormField
+              control={form.control}
+              name="date"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Data</FormLabel>
+                  <DatePicker value={field.value} onChange={field.onChange} />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <DialogFooter>
-              <Button>Cancelar</Button>
-              <Button>Adicionar</Button>
+              <DialogClose asChild>
+                <Button type="button" variant="outline">
+                  Cancelar
+                </Button>
+              </DialogClose>
+              <Button type="submit">Adicionar</Button>
             </DialogFooter>
           </form>
         </Form>
