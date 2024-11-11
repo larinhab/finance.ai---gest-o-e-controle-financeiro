@@ -20,7 +20,6 @@ const AddTransactionButton = () => {
         isOpen={dialogIsOpen}
         setIsOpen={setDialogIsOpen}
       />
-      ;
     </>
   );
 };
