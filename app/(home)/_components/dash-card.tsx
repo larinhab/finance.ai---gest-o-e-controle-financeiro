@@ -11,7 +11,7 @@ interface DashCardProps {
 
 const DashCard = ({ icon, title, amount, size = "small" }: DashCardProps) => {
   return (
-    <Card>
+    <Card className={`${size === "large" ? "bg-white bg-opacity-10" : ""}`}>
       <CardHeader className="flex-row items-center gap-4">
         {icon}
         <p

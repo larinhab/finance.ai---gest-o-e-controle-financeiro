@@ -3,6 +3,8 @@ import { redirect } from "next/navigation";
 import NavBar from "../_components/navbar";
 import SummaryCards from "./_components/summary-cards";
 import MonthSelect from "./_components/month-select";
+import TransactionsPieChart from "./_components/transactions-pie-chart";
+import { getDashboard } from "../_data/get-dashboard";
 
 interface HomeProps {
   searchParams: {
@@ -16,6 +18,8 @@ const Home = async ({ searchParams: { month } }: HomeProps) => {
     redirect("/login");
   }
 
+  const dashboard = await getDashboard(month);
+
   return (
     <>
       <NavBar />
@@ -24,7 +28,14 @@ const Home = async ({ searchParams: { month } }: HomeProps) => {
           <h1 className="text-2xl font-bold">Dashboard</h1>
           <MonthSelect />
         </div>
-        <SummaryCards month={month} />
+        <div className="grid-cols[2fr, 1fr] grid">
+          <div className="flex flex-col gap-6">
+            <SummaryCards month={month} {...dashboard} />
+            <div className="grid grid-cols-3 grid-rows-1 gap-6">
+              <TransactionsPieChart {...dashboard} />
+            </div>
+          </div>
+        </div>
       </div>
     </>
   );
