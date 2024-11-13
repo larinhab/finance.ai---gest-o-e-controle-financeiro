@@ -6,7 +6,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@radix-ui/react-select";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const MONTH_OPTIONS = [
   { value: "01", label: "Janeiro" },
@@ -30,9 +30,12 @@ const MonthSelect = () => {
     push(`/?month=${month}`);
   };
 
+  const searchParams = useSearchParams();
+  const month = searchParams.get("month");
+
   return (
-    <Select onValueChange={(value) => handleMonthChange(value)}>
-      <SelectTrigger className="w-[150px] rounded-full">
+    <Select onValueChange={handleMonthChange} defaultValue={month ?? ""}>
+      <SelectTrigger className="w-[150px] justify-center gap-2 rounded-full">
         <SelectValue placeholder="Mês" />
       </SelectTrigger>
       <SelectContent>

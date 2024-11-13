@@ -21,28 +21,28 @@ const SummaryCards = async ({
     <div className="">
       <CardHeader>
         <DashCard
-          icon={<WalletIcon size={20} />}
+          icon={<WalletIcon size={32} />}
           title="Saldo"
           amount={balance}
           size="large"
         />
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-3 gap-6">
+        <div className="grid grid-cols-3 items-center gap-6">
           <DashCard
-            icon={<PiggyBankIcon size={20} className="text-sky-300" />}
+            icon={<PiggyBankIcon size={32} className="text-sky-300" />}
             title="Investido"
             amount={investmentsTotal}
           />
 
           <DashCard
-            icon={<TrendingUpIcon size={20} className="text-primary" />}
+            icon={<TrendingUpIcon size={32} className="text-primary" />}
             title="Receita"
             amount={depositsTotal}
           />
 
           <DashCard
-            icon={<TrendingDownIcon size={20} className="text-red-500" />}
+            icon={<TrendingDownIcon size={32} className="text-red-500" />}
             title="Despesa"
             amount={expensesTotal}
           />

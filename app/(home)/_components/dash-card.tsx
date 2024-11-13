@@ -11,11 +11,11 @@ interface DashCardProps {
 
 const DashCard = ({ icon, title, amount, size = "small" }: DashCardProps) => {
   return (
-    <Card className={`${size === "large" ? "bg-white bg-opacity-10" : ""}`}>
+    <Card className={`${size === "large" ? "bg-white bg-opacity-5" : ""}`}>
       <CardHeader className="flex-row items-center gap-4">
         {icon}
         <p
-          className={`${size === "small" ? "text-muted-foreground" : "text-white opacity-70"}`}
+          className={`${size === "small" ? "text-muted-foreground" : "text-2xl text-white opacity-70"}`}
         >
           {title}
         </p>

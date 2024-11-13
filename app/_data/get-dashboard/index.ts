@@ -1,12 +1,19 @@
 import { db } from "@/app/_lib/prisma";
 import { TransactionType } from "@prisma/client";
-import { TransactionPercentagePerType } from "./types";
+import { TotalExpensePerCategory, TransactionPercentagePerType } from "./types";
+import { auth } from "@clerk/nextjs/server";
 
 export const getDashboard = async (month: string) => {
+  const { userId } = await auth();
+  if (!userId) {
+    throw new Error("Não autorizado!");
+  }
+
   const where = {
+    userId,
     date: {
       gte: new Date(`2024-${month}-01`),
-      lte: new Date(`2024-${month}-30`),
+      lte: new Date(`2024-${month}-31`),
     },
   };
 
@@ -57,11 +64,38 @@ export const getDashboard = async (month: string) => {
     ),
   };
 
+  const totalExpensePerCategory: TotalExpensePerCategory[] = (
+    await db.transaction.groupBy({
+      by: ["category"],
+      where: {
+        ...where,
+        type: TransactionType.EXPENSE,
+      },
+      _sum: {
+        amount: true,
+      },
+    })
+  ).map((category) => ({
+    category: category.category,
+    totalAmount: Number(category._sum.amount),
+    percentageOfTotal: Math.round(
+      (Number(category._sum.amount) / Number(expensesTotal)) * 100,
+    ),
+  }));
+
+  const lastTransactions = await db.transaction.findMany({
+    where: where,
+    orderBy: { date: "desc" },
+    take: 15,
+  });
+
   return {
     balance,
     depositsTotal,
     investmentsTotal,
     expensesTotal,
     typesPercentage,
+    totalExpensePerCategory,
+    lastTransactions,
   };
 };
